@@ -21,8 +21,4 @@ Memory_Page::Memory_Page(QWidget* parent)
 
 void Memory_Page::GetMemory()
 {
-    MEMORYSTATUS ms;
-    GlobalMemoryStatus(&ms);
-    TotalMemory->setText("Total Memory:" + QString::number(static_cast<int>(ms.dwTotalPhys)/1024/1024/1024));
-    FreeMemory->setText("Free mmemory: " + QString::number(static_cast<int>(ms.dwAvailPhys)/1024/1024/1024));
 }

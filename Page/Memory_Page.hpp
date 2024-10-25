@@ -9,7 +9,6 @@
 #include <QLabel>
 #include <QString>
 #include <QVBoxLayout>
-#include <windows.h>
 
 class Memory_Page : public QWidget
 {
