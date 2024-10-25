@@ -17,10 +17,10 @@ set(PROJECT_SOURCES
         MainWindow.cpp
         MainWindow.hpp
         CPU_Regs.hpp
-        CPU_Page.cpp
-        CPU_Page.hpp
-        Driver_Page.hpp
-        Driver_Page.cpp
+        Page/CPU_Page.cpp
+        Page/CPU_Page.hpp
+        Page/Driver_Page.hpp
+        Page/Driver_Page.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
