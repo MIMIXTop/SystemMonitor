@@ -21,6 +21,8 @@ set(PROJECT_SOURCES
         Page/CPU_Page.hpp
         Page/Driver_Page.hpp
         Page/Driver_Page.cpp
+        Page/Memory_Page.hpp
+        Page/Memory_Page.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

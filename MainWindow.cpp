@@ -16,3 +16,11 @@ void MainWindow::Driver_Button_clicked()
     }
 
 }
+
+void MainWindow::Memory_Button_clicked()
+{
+    if(StackWidget->currentIndex() != 2)
+    {
+        StackWidget->setCurrentIndex(2);
+    }
+}
