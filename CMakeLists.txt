@@ -26,6 +26,8 @@ set(PROJECT_SOURCES
         Page/CPU_Page.h
         Page/Utils/CpuMonitor.cpp
         Page/Utils/CpuMonitor.h
+        Page/Utils/MemoryMonitor.cpp
+        Page/Utils/MemoryMonitor.hpp
 )
 
 add_executable(QT_test ${PROJECT_SOURCES})  # Исправлено на PROJECT_SOURCES

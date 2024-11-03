@@ -6,9 +6,14 @@
 #define MEMORY_PAGE_HPP
 
 #include <QWidget>
-#include <QLabel>
 #include <QString>
+#include <QTableWidget>
 #include <QVBoxLayout>
+#include <QTimer>
+
+#include <array>
+
+#include "Utils/MemoryMonitor.hpp"
 
 class Memory_Page : public QWidget
 {
@@ -19,13 +24,10 @@ public:
     ~Memory_Page() = default;
 
 private:
-    QLabel* TotalMemory;
-    QLabel* FreeMemory ;
     QVBoxLayout* layout;
-
-    void GetMemory();
+    QTableWidget* table;
 private slots:
-
+    void updateMemory();
 };
 
 

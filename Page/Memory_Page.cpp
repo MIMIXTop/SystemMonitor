@@ -8,17 +8,33 @@ Memory_Page::Memory_Page(QWidget* parent)
 {
     resize(700,600);
     layout = new QVBoxLayout(this);
-    TotalMemory = new QLabel(this);
-    TotalMemory->setAlignment(Qt::AlignCenter);
-    TotalMemory->setGeometry(QRect(10, 10, 300, 300));
-    FreeMemory = new QLabel(this);
-    FreeMemory->setAlignment(Qt::AlignCenter);
-    FreeMemory->setGeometry(QRect(10, 10, 300, 300));
-    layout->addWidget(TotalMemory);
-    layout->addWidget(FreeMemory);
+    table = new QTableWidget(this);
+    table->setColumnCount(2);
+    table->setRowCount(5);
+    layout->addWidget(table);
     setLayout(layout);
+
+    QTimer* timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, &Memory_Page::updateMemory);
+    timer->start(1000);
 }
 
-void Memory_Page::GetMemory()
-{
+void Memory_Page::updateMemory() {
+    auto memory = MemoryMonitor();
+
+    table->setItem(0, 0, new QTableWidgetItem("Total Memory:"));
+    table->setItem(0, 1, new QTableWidgetItem(QString::number(memory[Memory::Total],'f', 2) + "Gb"));
+
+    table->setItem(1, 0, new QTableWidgetItem("Free Memory:"));
+    table->setItem(1, 1, new QTableWidgetItem(QString::number(memory[Memory::Free],'f', 2) + "Gb"));
+
+    table->setItem(2, 0, new QTableWidgetItem("Buffer Memory:"));
+    table->setItem(2, 1, new QTableWidgetItem(QString::number(memory[Memory::Buffers],'f', 2) + "Gb"));
+
+    table->setItem(3, 0, new QTableWidgetItem("Cached Memory:"));
+    table->setItem(3, 1, new QTableWidgetItem(QString::number(memory[Memory::Cached],'f', 2) + "Gb"));
+
+    table->setItem(4, 0, new QTableWidgetItem("Used Memory:"));
+    table->setItem(4, 1, new QTableWidgetItem(QString::number(memory[Memory::Used],'f', 2) + "Gb"));
+
 }
