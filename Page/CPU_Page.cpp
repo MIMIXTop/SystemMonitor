@@ -3,11 +3,13 @@
 CPU_Page::CPU_Page(QWidget* parent) {
     layout = new QVBoxLayout;
     Cpuload = new QTableWidget(this);
-    CpuName = new QLabel(QString::fromStdString(getCpuVender()));
+    CpuName = new QLabel(QString::fromStdString(getCpuVender()),this);
+    CpuTemper = new QLabel("Temperature: " + QString::number(getCpuTemperature()) + "^C");
     layout->addWidget(CpuName);
     layout->addWidget(Cpuload);
+    layout->addWidget(CpuTemper);
 
-    Cpuload->setRowCount(getCorsCounter());
+    Cpuload->setRowCount(getCorsCounter() + 1);
     Cpuload->setColumnCount(2);
 
     setLayout(layout);
@@ -29,6 +31,7 @@ void CPU_Page::updateCpuUsage() {
         }
     }
     prevStats = currStats;
+    CpuTemper->setText("Temperature: " + QString::number(getCpuTemperature()) + "^C");
 }
 
 std::string CPU_Page::getCpuVender() {

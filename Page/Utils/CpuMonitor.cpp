@@ -4,6 +4,8 @@
 
 #include "CpuMonitor.h"
 
+#include <QMessageBox>
+
 std::vector<CPUStats> getCPUStats() {
     std::ifstream file("/proc/stat");
     std::string line;
@@ -35,4 +37,19 @@ double calculateCPUUsage(const CPUStats& prev, const CPUStats& curr) {
     unsigned long idleDiff = currIdle - prevIdle;
 
     return (double)(totalDiff - idleDiff) / totalDiff * 100;
+}
+
+double getCpuTemperature() {
+    std::ifstream file("/sys/class/thermal/thermal_zone0/temp");
+    if (!file) {
+        QMessageBox::information(nullptr,"Error","Ошибка открытия файла.");
+        return NULL;
+    }
+    float temperature;
+    file >> temperature;
+
+    // Температура в миллиградусах, преобразуем в градусы Цельсия
+    temperature /= 1000.0;
+
+     return temperature;
 }

@@ -26,6 +26,7 @@ public:
 
 private:
     QLabel *CpuName;
+    QLabel *CpuTemper;
     QTableWidget *Cpuload;
     QLayout *layout;
     std::vector<CPUStats> prevStats;

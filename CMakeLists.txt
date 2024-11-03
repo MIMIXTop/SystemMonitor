@@ -28,6 +28,10 @@ set(PROJECT_SOURCES
         Page/Utils/CpuMonitor.h
         Page/Utils/MemoryMonitor.cpp
         Page/Utils/MemoryMonitor.hpp
+        Page/Utils/DriverMonitor.cpp
+        Page/Utils/DriverMonitor.hpp
+        Page/Driver_Page.cpp
+        Page/Driver_Page.hpp
 )
 
 add_executable(QT_test ${PROJECT_SOURCES})  # Исправлено на PROJECT_SOURCES
