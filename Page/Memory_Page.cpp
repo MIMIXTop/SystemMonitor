@@ -36,5 +36,4 @@ void Memory_Page::updateMemory() {
 
     table->setItem(4, 0, new QTableWidgetItem("Used Memory:"));
     table->setItem(4, 1, new QTableWidgetItem(QString::number(memory[Memory::Used],'f', 2) + "Gb"));
-
 }

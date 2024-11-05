@@ -20,5 +20,4 @@ Driver_Page::Driver_Page(QWidget *parent) {
     Total_Drive->setText("Total Drive: " + QString::number(drive[0],'f',2) + "Gb");
     Free_Drive->setText("Free Drive: " + QString::number(drive[1],'f',2) + "Gb");
     Usage_Drive->setText("Usage Drive: " + QString::number(drive[2],'f',2) + "Gb");
-
 }
