@@ -24,6 +24,6 @@ struct GPU {
 };
 
 const std::vector<GPU> GetPlatforms();
-const int GetFrequency();
+const int GetLoadGpu();
 
 #endif //GPUMONITOR_HPP

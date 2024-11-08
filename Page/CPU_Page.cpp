@@ -14,6 +14,8 @@ CPU_Page::CPU_Page(QWidget* parent) {
 
     setLayout(layout);
 
+    Cpuload->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
     QTimer *timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &CPU_Page::updateCpuUsage);
     timer->start(1000);

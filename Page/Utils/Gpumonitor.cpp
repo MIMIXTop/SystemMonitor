@@ -9,65 +9,74 @@
 
 const std::vector<GPU> GetPlatforms() {
     std::vector<GPU> platforms;
-    GPU temp;
-    unsigned counter = 0;
-
     cl_uint platformCount;
-    cl_platform_id *platform = nullptr;
+    cl_platform_id *platformsArray = nullptr;
 
+    // Получаем количество платформ
     cl_int err = clGetPlatformIDs(0, nullptr, &platformCount);
-
     if (err != CL_SUCCESS) {
         std::cerr << "Failed to get number of platforms. Error: " << err << std::endl;
         return {};
     }
 
-    platform = new cl_platform_id[platformCount];
-
-    err = clGetPlatformIDs(platformCount, platform, nullptr);
+    // Выделяем память для платформ
+    platformsArray = new cl_platform_id[platformCount];
+    err = clGetPlatformIDs(platformCount, platformsArray, nullptr);
     if (err != CL_SUCCESS) {
         std::cerr << "Failed to get platforms. Error: " << err << std::endl;
+        delete[] platformsArray;
         return {};
     }
 
+    // Проходим по всем платформам
     for (cl_uint i = 0; i < platformCount; ++i) {
         cl_uint deviceCount;
-        err = clGetDeviceIDs(platform[i], CL_DEVICE_TYPE_GPU, 0, nullptr, &deviceCount);
-        if (err != CL_SUCCESS && deviceCount > 0) {
-            cl_device_id *deviceIds = new cl_device_id[deviceCount];
-            err = clGetDeviceIDs(platform[i], CL_DEVICE_TYPE_GPU, 0, deviceIds, nullptr);
-            if (err == CL_SUCCESS) {
-                clGetDeviceInfo(deviceIds[0], CL_DEVICE_NAME, sizeof(temp.name),temp.name, nullptr);
-                clGetDeviceInfo(deviceIds[0],CL_DEVICE_GLOBAL_MEM_SIZE,sizeof(cl_ulong) , &temp.memory,nullptr);
-                clGetDeviceInfo(deviceIds[0],CL_DEVICE_MAX_CLOCK_FREQUENCY,sizeof(cl_uint) ,&temp.frequency,nullptr);
-                platforms.push_back(temp);
-            }
-            delete[] deviceIds;
+
+        // Получаем количество устройств GPU
+        err = clGetDeviceIDs(platformsArray[i], CL_DEVICE_TYPE_GPU, 0, nullptr, &deviceCount);
+        if (err != CL_SUCCESS) {
+            std::cerr << "Failed to get number of GPU devices. Error: " << err << std::endl;
+            continue; // Переходим к следующей платформе
         }
 
-        err = clGetDeviceIDs(platform[i], CL_DEVICE_TYPE_CPU, 0, nullptr, &platformCount);
+        // Если есть устройства, получаем информацию о них
+        if (deviceCount > 0) {
+            std::vector<cl_device_id> deviceIds(deviceCount);
+            err = clGetDeviceIDs(platformsArray[i], CL_DEVICE_TYPE_GPU, deviceCount, deviceIds.data(), nullptr);
+            if (err == CL_SUCCESS) {
+                for (cl_uint j = 0; j < deviceCount; ++j) {
+                    GPU temp;
+                    clGetDeviceInfo(deviceIds[j], CL_DEVICE_NAME, sizeof(temp.name), temp.name, nullptr);
+                    clGetDeviceInfo(deviceIds[j], CL_DEVICE_GLOBAL_MEM_SIZE, sizeof(cl_ulong), &temp.memory, nullptr);
+                    clGetDeviceInfo(deviceIds[j], CL_DEVICE_MAX_CLOCK_FREQUENCY, sizeof(cl_uint), &temp.frequency, nullptr);
+                    platforms.push_back(temp);
+                }
+            }
+        }
+
+        // Получаем количество устройств CPU
+        err = clGetDeviceIDs(platformsArray[i], CL_DEVICE_TYPE_CPU, 0, nullptr, &deviceCount);
         if (err == CL_SUCCESS && deviceCount > 0) {
-            cl_device_id *deviceIds = new cl_device_id[deviceCount];
-            err = clGetDeviceIDs(platform[i], CL_DEVICE_TYPE_CPU, 0, deviceIds, nullptr);
+            std::vector<cl_device_id> deviceIds(deviceCount);
+            err = clGetDeviceIDs(platformsArray[i], CL_DEVICE_TYPE_CPU, deviceCount, deviceIds.data(), nullptr);
             if (err == CL_SUCCESS) {
-                clGetDeviceInfo(deviceIds[0], CL_DEVICE_NAME, sizeof(temp.name),temp.name, nullptr);
-                clGetDeviceInfo(deviceIds[0],CL_DEVICE_GLOBAL_MEM_SIZE,sizeof(cl_ulong) , &temp.memory,nullptr);
-                clGetDeviceInfo(deviceIds[0],CL_DEVICE_MAX_CLOCK_FREQUENCY,sizeof(cl_uint) ,&temp.frequency,nullptr);
-                platforms.push_back(temp);
+                for (cl_uint j = 0; j < deviceCount; ++j) {
+                    GPU temp;
+                    clGetDeviceInfo(deviceIds[j], CL_DEVICE_NAME, sizeof(temp.name), temp.name, nullptr);
+                    clGetDeviceInfo(deviceIds[j], CL_DEVICE_GLOBAL_MEM_SIZE, sizeof(cl_ulong), &temp.memory, nullptr);
+                    clGetDeviceInfo(deviceIds[j], CL_DEVICE_MAX_CLOCK_FREQUENCY, sizeof(cl_uint), &temp.frequency, nullptr);
+                    platforms.push_back(temp);
+                }
             }
-        }
-
-        if (deviceCount == 0) {
-            std::cout << "No devices found for this platform." << std::endl;
-            return {};
         }
     }
 
-    delete[] platform;
+    // Освобождаем выделенную память
+    delete[] platformsArray;
     return platforms;
 }
 
-const int GetFrequency() {
+const int GetLoadGpu() {
     std::array<char,128> buffer;
     std::string load;
 
@@ -81,11 +90,11 @@ const int GetFrequency() {
     }
     int result ;
 
-    std::regex regex(R"(/d+)");
+    std::regex regex(R"((\d+))");
 
     std::smatch match;
     std::regex_search(load, match, regex);
-    result = std::stoi(match.str(0));
+    result = std::stoi(match[1].str());
     return result;
 }
 

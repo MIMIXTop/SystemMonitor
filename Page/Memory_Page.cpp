@@ -13,6 +13,8 @@ Memory_Page::Memory_Page(QWidget* parent)
     table->setRowCount(5);
     layout->addWidget(table);
     setLayout(layout);
+    table->setColumnWidth(0,130);
+    table->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     QTimer* timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &Memory_Page::updateMemory);

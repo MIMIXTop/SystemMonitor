@@ -13,6 +13,7 @@ find_package(Qt5 COMPONENTS
         Core
         Gui
         Widgets
+        Charts
         REQUIRED)
 
 include_directories(/usr/include)
@@ -49,6 +50,7 @@ target_link_libraries(QT_test
         Qt5::Core
         Qt5::Gui
         Qt5::Widgets
+        Qt5::Charts
 )
 
 target_link_libraries(QT_test ${OpenCL_LIBRARY})
