@@ -15,6 +15,10 @@ find_package(Qt5 COMPONENTS
         Widgets
         REQUIRED)
 
+include_directories(/usr/include)
+
+set(OpenCL_LIBRARY /usr/lib64/libOpenCL.so.1)
+
 set(PROJECT_SOURCES
         main.cpp
         MainWindow.cpp
@@ -32,7 +36,13 @@ set(PROJECT_SOURCES
         Page/Utils/DriverMonitor.hpp
         Page/Driver_Page.cpp
         Page/Driver_Page.hpp
+        Page/Utils/Gpumonitor.cpp
+        Page/Utils/Gpumonitor.hpp
+        Page/GPU_Page.cpp
+        Page/GPU_Page.hpp
 )
+
+find_package(OpenCL REQUIRED)
 
 add_executable(QT_test ${PROJECT_SOURCES})  # Исправлено на PROJECT_SOURCES
 target_link_libraries(QT_test
@@ -40,3 +50,5 @@ target_link_libraries(QT_test
         Qt5::Gui
         Qt5::Widgets
 )
+
+target_link_libraries(QT_test ${OpenCL_LIBRARY})
