@@ -77,7 +77,7 @@ const std::vector<GPU> GetPlatforms() {
 }
 
 const int GetLoadGpu() {
-    std::array<char,128> buffer;
+    std::array<char,128> buffer{};
     std::string load;
 
     std::unique_ptr<FILE,decltype(&pclose)> pipe(popen("nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader", "r"), pclose);
@@ -88,13 +88,12 @@ const int GetLoadGpu() {
     while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
         load.append(buffer.data());
     }
-    int result ;
 
     std::regex regex(R"((\d+))");
 
     std::smatch match;
     std::regex_search(load, match, regex);
-    result = std::stoi(match[1].str());
-    return result;
+
+    return std::stoi(match[1].str());
 }
 

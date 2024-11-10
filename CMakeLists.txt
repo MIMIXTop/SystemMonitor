@@ -41,6 +41,10 @@ set(PROJECT_SOURCES
         Page/Utils/Gpumonitor.hpp
         Page/GPU_Page.cpp
         Page/GPU_Page.hpp
+        Page/Utils/Processes.cpp
+        Page/Utils/Processes.hpp
+        Page/Process_Page.cpp
+        Page/Process_Page.hpp
 )
 
 find_package(OpenCL REQUIRED)
