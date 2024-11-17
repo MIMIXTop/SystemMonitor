@@ -20,7 +20,7 @@ GPU_Page::GPU_Page(QWidget *parent) {
     }
 
     layout = new QVBoxLayout(this);
-
+/*
     series = new QtCharts::QLineSeries();
     chart = new QtCharts::QChart();
     chart->setTitle("GPU usage");
@@ -33,7 +33,7 @@ GPU_Page::GPU_Page(QWidget *parent) {
     layout->addWidget(chartView);
     layout->addWidget(table);
     setLayout(layout);
-
+*/
     table->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     timer = new QTimer(this);
@@ -42,13 +42,13 @@ GPU_Page::GPU_Page(QWidget *parent) {
 }
 
 void GPU_Page::UpdateGPULoad() {
-    int GpuLoad = GetLoadGpu();
+   /* int GpuLoad = GetLoadGpu();
 
     series->append(timeIndex++, GpuLoad);
 
     if (series->count() > 20) {
         series->remove(0);
     }
-    chart->axisX()->setRange(timeIndex - 20,timeIndex);
+    chart->axisX()->setRange(timeIndex - 20,timeIndex);*/
 }
 

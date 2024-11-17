@@ -22,6 +22,7 @@ private:
     QVBoxLayout *layout;
     QTimer *timer;
     bool ascending = true;
+    int sortedColumn = 0;
 
 private slots:
     void update_processes();

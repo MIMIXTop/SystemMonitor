@@ -1,53 +1,81 @@
-//
-// Created by mimixtop on 10.11.24.
-//
-
 #include "Processes.hpp"
 
+std::string GetCurrentUser() {
+    uid_t uid = getuid();
+    struct passwd *pw = getpwuid(uid);
+    return pw ? pw->pw_name : "unknown";
+}
 
-#include "Processes.hpp"
-#include <QVector>
-#include <QStringList>
-#include <array>
-#include <memory>
-#include <stdexcept>
-#include <cstdio>
-#include <qregularexpression.h>
+// Функция для разделения строки на слова
+std::vector<std::string> SplitString(const std::string& str) {
+    std::vector<std::string> words;
+    std::regex wordReg(R"(\s+)"); // Разделитель: один или несколько пробелов
 
-QVector<Processes> GetProcesses() {
-    QVector<Processes> processes; // Контейнер для хранения информации о процессах
-    Processes process_; // Объект для хранения данных одного процесса
-    std::array<char, 128> buffer{}; // Буфер для считывания данных из команды
-    QStringList list; // Список для хранения строк, полученных от команды
+    std::sregex_token_iterator it(str.begin(), str.end(), wordReg, -1);
+    std::sregex_token_iterator end;
 
-    // Уникальный указатель для открытия командной строки с помощью popen
-    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen("ps aux", "r"), pclose);
-    if (!pipe) throw std::runtime_error("popen() failed!"); // Проверка на ошибки
+    for (; it != end; ++it) {
+        if (!it->str().empty()) { // Игнорируем пустые строки
+            words.push_back(it->str());
+        }
+    }
 
-    // Считывание данных из команды
+    return words;
+}
+
+std::vector<Processes> GetProcesses(const std::string& currentUser) {
+    std::vector<Processes> processes;
+
+    // Выполняем команду ps aux
+    std::array<char, 128> buffer;
+    std::string result;
+
+    std::shared_ptr<FILE> pipe(popen("ps aux --sort=-%cpu", "r"), pclose);
+    if (!pipe) {
+        throw std::runtime_error("Ошибка при выполнении команды ps");
+    }
+
+    // Читаем вывод команды
     while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
-        // Добавление считанной строки в список
-        list.append(QString::fromStdString(buffer.data()));
+        result += buffer.data();
     }
 
-    // Обработка каждой строки списка
-    for (const auto& process : list) {
-        // Разделение строки на поля по пробелам с использованием регулярного выражения
-        QVector<QString> fields = QVector<QString>::fromList(process.split(QRegularExpression("\\s+"))); // Разделение по пробелам
+    // Разделяем строки
+    std::istringstream iss(result);
+    std::string line;
 
-        // Проверка, что количество полей соответствует ожиданиям
-        if (fields.size() < 11) continue; // Если данных недостаточно, пропускаем строку
+    // Пропускаем заголовок
+    std::getline(iss, line);
 
-        // Здесь можно обработать полученные данные
-        process_.user = fields.at(0);
-        process_.pid = fields.at(1).toInt(); // Преобразование PID в int
-        process_.cpu_load = fields.at(2).toFloat(); // Преобразование CPU нагрузки в float
-        process_.memory_load = fields.at(3).toFloat(); // Преобразование памяти в float
-        process_.name = fields.at(10); // Обычно имя процесса находится в 11-м поле (индекс 10)
+    // Читаем каждую строку
+    while (std::getline(iss, line)) {
+        std::vector<std::string> tokens = SplitString(line);
 
-        processes.append(process_); // Добавление информации о процессе в вектор
+        if (tokens.size() >= 11) { // Убедимся, что есть достаточно токенов
+            Processes info;
+            info.user = QString::fromStdString(tokens[0]); // Имя пользователя
+            info.cpu_load = std::stof(tokens[2]); // Загрузка CPU
+            info.memory_load = std::stof(tokens[3]); // Использование памяти
+            info.pid = std::stoi(tokens[1]); // PID
+
+            // Составляем имя процесса из оставшихся токенов
+            QString name;
+            for (size_t i = 10; i < tokens.size(); ++i) {
+                name += QString::fromStdString(tokens[i]) + " "; // Добавляем пробел между словами
+            }
+            info.name = name.trimmed(); // Удаляем лишние пробелы
+
+            // Сокращаем имя до 150 символов, если необходимо
+            if (info.name.length() > 150) {
+                info.name = info.name.left(150) + "..."; // Добавляем многоточие
+            }
+
+            // Фильтруем по имени пользователя
+            if (info.user == QString::fromStdString(currentUser)) {
+                processes.push_back(info);
+            }
+        }
     }
 
-    // Возврат результата
     return processes;
 }

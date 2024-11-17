@@ -5,15 +5,15 @@
 #ifndef PROCESSES_HPP
 #define PROCESSES_HPP
 
-#include <iostream>
-#include <cstdio>
-#include <memory>
-#include <stdexcept>
+#include <QString>
+#include <sstream>
 #include <string>
+#include <vector>
 #include <array>
-#include <QVector>
-#include <QStringList>
-#include <QRegExp>
+#include <memory>
+#include <regex>
+#include <unistd.h>
+#include <pwd.h>
 
 struct Processes {
     QString name;
@@ -23,6 +23,8 @@ struct Processes {
     float memory_load;
 };
 
-QVector<Processes> GetProcesses();
+std::string GetCurrentUser();
+
+std::vector<Processes> GetProcesses(const std::string& currentUser);
 
 #endif //PROCESSES_HPP

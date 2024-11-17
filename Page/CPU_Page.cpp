@@ -1,57 +1,107 @@
 #include "CPU_Page.h"
 
 CPU_Page::CPU_Page(QWidget* parent) {
-    layout = new QVBoxLayout;
-    Cpuload = new QTableWidget(this);
-    CpuName = new QLabel(QString::fromStdString(getCpuVender()),this);
-    CpuTemper = new QLabel("Temperature: " + QString::number(getCpuTemperature()) + "^C");
-    layout->addWidget(CpuName);
-    layout->addWidget(Cpuload);
-    layout->addWidget(CpuTemper);
-
-    Cpuload->setRowCount(getCorsCounter() + 1);
-    Cpuload->setColumnCount(2);
+    layout = new QGridLayout();
+    cpuWidget = new CpuWidget();
 
     setLayout(layout);
+    // Создание графика загрузки по ядрам
+    mPlot = new QCustomPlot();
 
-    Cpuload->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    mPlot->yAxis->setLabel("Load (%)");
 
-    QTimer *timer = new QTimer(this);
+    for(int i = 0; i < corsCounter; i++) {
+        mPlot->addGraph();
+        mPlot->graph(i)->setPen(PenColor.at(i));
+    }
+
+    layout->addWidget(mPlot,0,0);
+
+    mPlot->xAxis->setRange(0,10);
+    mPlot->yAxis->setRange(0,100);
+
+    QTimer* timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &CPU_Page::updateCpuUsage);
     timer->start(1000);
 
+    prevStats = getCPUStats();
+
+    //Создание графика температуры процессора
+
+    tempPlot = new QCustomPlot();
+    layout->addWidget(tempPlot,1,0);
+    layout->addWidget(cpuWidget,0,1);
+
+    tempPlot->yAxis->setLabel("Temp (^C)");
+
+    tempPlot->addGraph();
+    tempPlot->graph(0)->setPen(PenColor.at(0));
+
+    tempPlot->legend->setVisible(false);
+
+    tempPlot->xAxis->setRange(0,10);
+    tempPlot->yAxis->setRange(0,100);
+
+    QTimer* timer2 = new QTimer(this);
+    connect(timer2, &QTimer::timeout, this, &CPU_Page::updateCpuTemper);
+    timer2->start(1000);
 }
 
 void CPU_Page::updateCpuUsage() {
 
-    auto currStats = getCPUStats();
-    if (!prevStats.empty()) {
-        for (size_t i = 0; i < currStats.size(); ++i) {
-            double usage = calculateCPUUsage(prevStats[i], currStats[i]);
-            Cpuload->setItem(i, 0, new QTableWidgetItem(QString("CPU %1").arg(i)));
-            Cpuload->setItem(i,1,new QTableWidgetItem(QString::number(usage,'f',2)));
+    static QVector<double> x;
+    static QVector<QVector<double>> yCpu(corsCounter);
+    static double startTime = 0;
+    static int count = 0;
+
+    std::vector<CPUStats> currStats = getCPUStats();
+
+    if(x.size() > 10) {
+        x.remove(0);
+        for(auto &y : yCpu) {
+            y.remove(0);
         }
     }
+
+    for (int i = 0; i < corsCounter; i++) {
+        double cpuUsage = calculateCPUUsage(prevStats[i + 1],currStats[i + 1]);
+        yCpu[i].append(cpuUsage);
+    }
+
+    double currTime = startTime + count++;
+    x.append(currTime);
+
+    mPlot->xAxis->setRange(currTime-10, currTime);
+
+    for(int i = 0; i < corsCounter; i++) {
+        mPlot->graph(i)->setData(x,yCpu.at(i));
+    }
+
+    mPlot->replot();
+
     prevStats = currStats;
-    CpuTemper->setText("Temperature: " + QString::number(getCpuTemperature()) + "^C");
 }
 
-std::string CPU_Page::getCpuVender() {
+void CPU_Page::updateCpuTemper() {
+    static QVector<double> x;
+    static QVector<double> yCpu;
+    static double startTime = 0;
+    static int count = 0;
 
-    std::ifstream cpuinfo("/proc/cpuinfo");
-    std::string line;
-    std::string model;
+    double temperature = getCpuTemperature();
 
-    while (std::getline(cpuinfo,line)){
-        if(line.find("model name") != std::string::npos){
-            model = line;
-            break;
-        }
+    if(x.size() > 10) {
+        x.remove(0);
+        yCpu.remove(0);
     }
 
-    return model.substr(model.find(":") + 2);
-}
+    yCpu.append(temperature);
 
-unsigned int CPU_Page::getCorsCounter() {
-    return std::thread::hardware_concurrency();
+    double currTime = startTime + count++;
+    x.append(currTime);
+
+    tempPlot->xAxis->setRange(currTime-10, currTime);
+
+    tempPlot->graph(0)->setData(x,yCpu);
+    tempPlot->replot();
 }

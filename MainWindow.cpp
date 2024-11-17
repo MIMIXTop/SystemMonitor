@@ -47,36 +47,55 @@ MainWindow::MainWindow(QWidget *parent): QWidget(parent) {
     StackWidget->addWidget(gpu);
     StackWidget->addWidget(process);
 
-    StackWidget->setCurrentIndex(4);
+    StackWidget->setCurrentIndex(0);
     setLayout(mainLayout);
 }
 
+
+void MainWindow::animateTransition(int fromIndex, int toIndex) {
+    if (fromIndex == toIndex) return;
+
+    QWidget *currentWidget = StackWidget->widget(fromIndex);
+    QWidget *nextWidget = StackWidget->widget(toIndex);
+
+    nextWidget->setGeometry(currentWidget->geometry());
+    nextWidget->setVisible(true);
+
+    QPropertyAnimation *flipOutAnimation = new QPropertyAnimation(currentWidget,"geometry");
+    flipOutAnimation->setDuration(500);
+    flipOutAnimation->setStartValue(currentWidget->geometry());
+    flipOutAnimation->setEndValue(QRect(currentWidget->x() + currentWidget->width(), currentWidget->y(), currentWidget->width(), currentWidget->height()));
+
+    QPropertyAnimation *flipInAnimation = new QPropertyAnimation(nextWidget,"geometry");
+    flipInAnimation->setDuration(500);
+    flipInAnimation->setStartValue(QRect(currentWidget->x() - currentWidget->width(), currentWidget->y(), currentWidget->width(), currentWidget->height()));
+    flipInAnimation->setEndValue(currentWidget->geometry());
+
+    connect(flipOutAnimation, &QPropertyAnimation::finished,[=]() {
+        StackWidget->setCurrentIndex(toIndex);
+        currentWidget->setVisible(false);
+    });
+
+    flipOutAnimation->start();
+    flipInAnimation->start();
+}
+
 void MainWindow::CPU_Button_clicked() {
-    if (StackWidget->currentIndex() != 0) {
-        StackWidget->setCurrentIndex(0);
-    }
+    animateTransition(StackWidget->currentIndex(), 0);
 }
 
 void MainWindow::Driver_Button_clicked() {
-    if (StackWidget->currentIndex() != 1) {
-        StackWidget->setCurrentIndex(1);
-    }
+    animateTransition(StackWidget->currentIndex(), 1);
 }
 
 void MainWindow::Memory_Button_clicked() {
-    if (StackWidget->currentIndex() != 2) {
-        StackWidget->setCurrentIndex(2);
-    }
+    animateTransition(StackWidget->currentIndex(), 2);
 }
 
 void MainWindow::GPU_Button_clicked() {
-    if (StackWidget->currentIndex() != 3) {
-        StackWidget->setCurrentIndex(3);
-    }
+    animateTransition(StackWidget->currentIndex(), 3);
 }
 
 void MainWindow::Process_Button_clicked() {
-    if (StackWidget->currentIndex() != 4) {
-        StackWidget->setCurrentIndex(4);
-    }
+    animateTransition(StackWidget->currentIndex(), 4);
 }

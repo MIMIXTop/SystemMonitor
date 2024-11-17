@@ -6,6 +6,7 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QPropertyAnimation>
 
 #include "Page/Driver_Page.hpp"
 #include "Page/Memory_Page.hpp"
@@ -34,6 +35,8 @@ private:
     QHBoxLayout *mainLayout;
     QVBoxLayout *stackLayout;
     QVBoxLayout *buttonLayout;
+
+    void animateTransition(int fromIndex, int toIndex);
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
