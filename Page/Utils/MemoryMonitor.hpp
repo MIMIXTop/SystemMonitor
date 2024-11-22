@@ -11,14 +11,14 @@
 #include <QMessageBox>
 
 enum Memory {
-    Total,
-    Free,
-    Buffers,
-    Cached,
-    Used// excluding cache and buffers
+    mTotal,
+    mUsed
 };
 
-std::array<float,5> MemoryMonitor();
+std::array<float,2> MemoryUsage();
+
+std::vector<long long> stringConvertToInt(std::vector<std::string> data);
+std::vector<std::string> readFile();
 
 
 #endif //MEMORYMONITOR_HPP

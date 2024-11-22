@@ -6,7 +6,6 @@
 #define QT_TEST_CPU_PAGE_H
 
 #include "Utils/CpuMonitor.h"
-#include "MyWidget/CpuWidget.hpp"
 
 #include <QWidget>
 #include <QTimer>
@@ -29,11 +28,8 @@ private:
     unsigned int corsCounter = std::thread::hardware_concurrency();
     QCustomPlot *mPlot;
     QCustomPlot *tempPlot;
-    QLabel *CpuName;
-    QLabel *CpuTemper;
     QGridLayout *layout;
     std::vector<CPUStats> prevStats;
-    CpuWidget *cpuWidget;
 
     int timeIndex = 0;
 

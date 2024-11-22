@@ -5,8 +5,10 @@
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QTimer>
-/*#include <QtCharts/QChartView>
-#include <QtCharts/QLineSeries>*/
+#include <qcustomplot/qcustomplot.h>
+#include <QVector>
+
+#include <vector>
 
 #include "Utils/Gpumonitor.hpp"
 
@@ -20,9 +22,7 @@ private slots:
     void UpdateGPULoad();
 
 private:
-    /*QtCharts::QLineSeries *series;
-    QtCharts::QChart *chart;
-    QtCharts::QChartView *chartView;*/
+    QCustomPlot *gpuPlot;
     QTimer *timer;
     QVBoxLayout *layout;
 

@@ -8,7 +8,7 @@
 #include <QHBoxLayout>
 #include <QPropertyAnimation>
 
-#include "Page/Driver_Page.hpp"
+#include "Page/System_Page.hpp"
 #include "Page/Memory_Page.hpp"
 #include "Page/CPU_Page.h"
 #include "Page/GPU_Page.hpp"
@@ -20,7 +20,7 @@ class MainWindow : public QWidget {
 private:
     Memory_Page *memory;
     CPU_Page *cpu;
-    Driver_Page *driver;
+    System_Page *driver;
     GPU_Page *gpu;
     Process_Page *process;
 

@@ -4,41 +4,51 @@
 
 #include "MemoryMonitor.hpp"
 
-std::array<float, 5> MemoryMonitor() {
-    std::array<float, 5> result;
-    std::ifstream memInf("/proc/meminfo");
-    if (!memInf.is_open()) {
-        QMessageBox::information(nullptr,"Error","File not found");
-    }
-
+std::vector<std::string> readFile(){
+    std::ifstream file;
     std::string line;
+    std::vector<std::string> result;
 
-    long totalMem = 0;
-    long usedMem = 0;
-    long freeMem = 0;
-    long cached = 0;
-    long buffer = 0;
+    file.open("/proc/meminfo");
 
-    while (std::getline(memInf, line)) {
-        if (line.find("MemTotal:") == 0) {
-            totalMem = std::stol(line.substr(line.find_first_of("0123456789")));
-        } else if (line.find("MemFree:") == 0) {
-            freeMem = std::stol(line.substr(line.find_first_of("0123456789")));
-        } else if (line.find("Buffers:") == 0) {
-            buffer = std::stol(line.substr(line.find_first_of("0123456789")));
-        } else if (line.find("Cached:") == 0) {
-            cached = std::stol(line.substr(line.find_first_of("0123456789")));
+    if(file.is_open()){
+        while (std::getline(file,line))
+        {
+            result.push_back(line);
         }
+    }else{
+        throw std::runtime_error("Unable to open /proc/meminfo");
     }
 
-    memInf.close();
-
-    usedMem = totalMem - cached - freeMem - buffer;
-
-    result[Memory::Total] = static_cast<float>(totalMem) / 1024 / 1024;
-    result[Memory::Used] = static_cast<float>(usedMem) / 1024 / 1024; ;
-    result[Memory::Cached] = static_cast<float>(cached) / 1024 / 1024; ;
-    result[Memory::Free] = static_cast<float>(freeMem) / 1024 / 1024; ;
-    result[Memory::Buffers] = static_cast<float>(buffer) / 1024 / 1024; ;
     return result;
 }
+
+std::vector<long long> stringConvertToInt(std::vector<std::string> data){
+    std::vector<long long > result;
+
+    for (auto &&line : data){
+        result.push_back(std::stoll(line.substr(line.find_first_of("0123456789"))));
+    }
+
+    return result;
+}
+
+std::array<float,2> MemoryUsage(){
+    std::vector data = stringConvertToInt(readFile());
+
+    auto memTotal = data.at(0);
+    auto memFree = data.at(1);
+    auto buffer = data.at(3);
+    auto cached = data.at(4);
+    auto swapTotal = data.at(14);
+    auto swapFree = data.at(15);
+    auto sreclaimable = data.at(23);
+    auto shmem = data.at(22);
+
+    cached = (cached + sreclaimable - shmem);
+    auto memUsed = (memTotal - (memFree + buffer + cached));
+    auto swapUsed = (swapTotal - swapFree);
+
+    return {static_cast<float>(memTotal / 1024.0 / 1024),static_cast<float>(memUsed / 1024.0 / 1024)};
+}
+

@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent): QWidget(parent) {
 
     cpu = new CPU_Page();
     memory = new Memory_Page();
-    driver = new Driver_Page();
+    driver = new System_Page();
     gpu = new GPU_Page();
     process = new Process_Page();
 

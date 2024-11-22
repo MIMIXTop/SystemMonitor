@@ -8,13 +8,18 @@ Memory_Page::Memory_Page(QWidget* parent)
 {
     resize(700,600);
     layout = new QVBoxLayout(this);
-    table = new QTableWidget(this);
-    table->setColumnCount(2);
-    table->setRowCount(5);
-    layout->addWidget(table);
-    setLayout(layout);
-    table->setColumnWidth(0,130);
-    table->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    plot = new QCustomPlot();
+    layout->addWidget(plot);
+
+    plot->xAxis->setLabel("Load (%)");
+
+    plot->addGraph();
+    plot->graph(0)->setPen(QPen(Qt::black));
+
+    plot->legend->setVisible(false);
+
+    plot->xAxis->setRange(0,10);
+    plot->yAxis->setRange(0,100);
 
     QTimer* timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &Memory_Page::updateMemory);
@@ -22,20 +27,24 @@ Memory_Page::Memory_Page(QWidget* parent)
 }
 
 void Memory_Page::updateMemory() {
-    auto memory = MemoryMonitor();
+    static QVector<double> x;
+    static QVector<double> yMem;
+    static double startTime = 0;
+    static int count = 0;
 
-    table->setItem(0, 0, new QTableWidgetItem("Total Memory:"));
-    table->setItem(0, 1, new QTableWidgetItem(QString::number(memory[Memory::Total],'f', 2) + "Gb"));
+    auto memory = MemoryUsage();
 
-    table->setItem(1, 0, new QTableWidgetItem("Free Memory:"));
-    table->setItem(1, 1, new QTableWidgetItem(QString::number(memory[Memory::Free],'f', 2) + "Gb"));
+    if (x.size() > 10) {
+        x.remove(0);
+        yMem.remove(0);
+    }
 
-    table->setItem(2, 0, new QTableWidgetItem("Buffer Memory:"));
-    table->setItem(2, 1, new QTableWidgetItem(QString::number(memory[Memory::Buffers],'f', 2) + "Gb"));
+    yMem.append(memory[Memory::mUsed] / memory[Memory::mTotal] * 100);
 
-    table->setItem(3, 0, new QTableWidgetItem("Cached Memory:"));
-    table->setItem(3, 1, new QTableWidgetItem(QString::number(memory[Memory::Cached],'f', 2) + "Gb"));
+    double currentTime = startTime - count++;
+    x.append(currentTime);
 
-    table->setItem(4, 0, new QTableWidgetItem("Used Memory:"));
-    table->setItem(4, 1, new QTableWidgetItem(QString::number(memory[Memory::Used],'f', 2) + "Gb"));
+    plot->xAxis->setRange(currentTime - 10, currentTime);
+    plot->graph(0)->setData(x,yMem);
+    plot->replot();
 }

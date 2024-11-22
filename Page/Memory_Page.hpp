@@ -10,6 +10,7 @@
 #include <QTableWidget>
 #include <QVBoxLayout>
 #include <QTimer>
+#include <qcustomplot/qcustomplot.h>
 
 #include <array>
 
@@ -24,6 +25,7 @@ public:
     ~Memory_Page() = default;
 
 private:
+    QCustomPlot* plot;
     QVBoxLayout* layout;
     QTableWidget* table;
 private slots:

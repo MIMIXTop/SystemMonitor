@@ -2,7 +2,7 @@
 
 std::string GetCurrentUser() {
     uid_t uid = getuid();
-    struct passwd *pw = getpwuid(uid);
+    passwd *pw = getpwuid(uid);
     return pw ? pw->pw_name : "unknown";
 }
 

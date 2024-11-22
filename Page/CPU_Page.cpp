@@ -2,7 +2,7 @@
 
 CPU_Page::CPU_Page(QWidget* parent) {
     layout = new QGridLayout();
-    cpuWidget = new CpuWidget();
+    //cpuWidget = new CpuWidget();
 
     setLayout(layout);
     // Создание графика загрузки по ядрам
@@ -29,8 +29,6 @@ CPU_Page::CPU_Page(QWidget* parent) {
     //Создание графика температуры процессора
 
     tempPlot = new QCustomPlot();
-    layout->addWidget(tempPlot,1,0);
-    layout->addWidget(cpuWidget,0,1);
 
     tempPlot->yAxis->setLabel("Temp (^C)");
 
@@ -42,9 +40,10 @@ CPU_Page::CPU_Page(QWidget* parent) {
     tempPlot->xAxis->setRange(0,10);
     tempPlot->yAxis->setRange(0,100);
 
-    QTimer* timer2 = new QTimer(this);
-    connect(timer2, &QTimer::timeout, this, &CPU_Page::updateCpuTemper);
-    timer2->start(1000);
+    connect(timer, &QTimer::timeout, this, &CPU_Page::updateCpuTemper);
+
+    layout->addWidget(tempPlot, 1, 0);
+    //layout->addWidget(cpuWidget, 0, 1, 2, 1);
 }
 
 void CPU_Page::updateCpuUsage() {

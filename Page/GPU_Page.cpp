@@ -4,10 +4,13 @@
 
 #include "GPU_Page.hpp"
 
+#include <iostream>
+
 GPU_Page::GPU_Page(QWidget *parent) {
     std::vector platform = GetPlatforms();
     table = new QTableWidget();
-
+    table->setMinimumSize(100, 50);
+    table->setMaximumSize(this->width(), 400);
     table->setColumnCount(3);
     table->setRowCount(platform.size());
 
@@ -20,35 +23,56 @@ GPU_Page::GPU_Page(QWidget *parent) {
     }
 
     layout = new QVBoxLayout(this);
-/*
-    series = new QtCharts::QLineSeries();
-    chart = new QtCharts::QChart();
-    chart->setTitle("GPU usage");
-    chart->addSeries(series);
-    chart->createDefaultAxes();
-    chart->axisX()->setRange(0,100);
 
-    chartView = new QtCharts::QChartView(chart);
-    chartView->setRenderHint(QPainter::Antialiasing);
-    layout->addWidget(chartView);
-    layout->addWidget(table);
-    setLayout(layout);
-*/
+
     table->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+    table->resizeRowsToContents();
+    table->resizeColumnsToContents();
+
+    //график для видеокарты
+    gpuPlot = new QCustomPlot();
+    layout->addWidget(gpuPlot);
+
+    gpuPlot->yAxis->setLabel("Load");
+
+    gpuPlot->addGraph();
+    gpuPlot->graph(0)->setPen(QPen(Qt::black));
+
+    gpuPlot->legend->setVisible(false);
+
+    gpuPlot->xAxis->setRange(0,10);
+    gpuPlot->yAxis->setRange(0,100);
 
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &GPU_Page::UpdateGPULoad);
     timer->start(1000);
+    layout->addWidget(table);
+
 }
 
 void GPU_Page::UpdateGPULoad() {
-   /* int GpuLoad = GetLoadGpu();
+    QVector<double> x;
+    QVector<double> yGpu;
+    static double startTime = 0;
+    static int count = 0;
 
-    series->append(timeIndex++, GpuLoad);
+    int load = GetLoadGpu();
+    //std::cout << load << std::endl;
 
-    if (series->count() > 20) {
-        series->remove(0);
+    if(x.size() > 10) {
+        x.remove(0);
+        yGpu.remove(0);
     }
-    chart->axisX()->setRange(timeIndex - 20,timeIndex);*/
+
+    yGpu.append(load);
+
+    double currTime = startTime + count++;
+    x.append(currTime);
+
+    gpuPlot->xAxis->setRange(currTime - 10,currTime);
+
+    gpuPlot->graph(0)->setData(x,yGpu);
+    gpuPlot->replot();
 }
 

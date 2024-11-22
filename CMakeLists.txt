@@ -37,10 +37,10 @@ set(PROJECT_SOURCES
         Page/Utils/CpuMonitor.h
         Page/Utils/MemoryMonitor.cpp
         Page/Utils/MemoryMonitor.hpp
-        Page/Utils/DriverMonitor.cpp
-        Page/Utils/DriverMonitor.hpp
-        Page/Driver_Page.cpp
-        Page/Driver_Page.hpp
+        Page/Utils/SystemMonitor.cpp
+        Page/Utils/SystemMonitor.hpp
+        Page/System_Page.cpp
+        Page/System_Page.hpp
         Page/Utils/Gpumonitor.cpp
         Page/Utils/Gpumonitor.hpp
         Page/GPU_Page.cpp
@@ -49,8 +49,6 @@ set(PROJECT_SOURCES
         Page/Utils/Processes.hpp
         Page/Process_Page.cpp
         Page/Process_Page.hpp
-        MyWidget/CpuWidget.cpp
-        MyWidget/CpuWidget.hpp
 )
 
 # Поиск библиотеки OpenCL
