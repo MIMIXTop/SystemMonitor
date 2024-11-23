@@ -11,7 +11,6 @@
 #include "Page/System_Page.hpp"
 #include "Page/Memory_Page.hpp"
 #include "Page/CPU_Page.h"
-#include "Page/GPU_Page.hpp"
 #include "Page/Process_Page.hpp"
 
 class MainWindow : public QWidget {
@@ -21,7 +20,6 @@ private:
     Memory_Page *memory;
     CPU_Page *cpu;
     System_Page *driver;
-    GPU_Page *gpu;
     Process_Page *process;
 
     QStackedWidget *StackWidget;
@@ -29,7 +27,6 @@ private:
     QPushButton *CPU_Button;
     QPushButton *Driver_Button;
     QPushButton *Memory_Button;
-    QPushButton *GPU_Button;
     QPushButton *Process_Button;
 
     QHBoxLayout *mainLayout;
@@ -47,8 +44,6 @@ private slots:
     void Driver_Button_clicked();
 
     void Memory_Button_clicked();
-
-    void GPU_Button_clicked();
 
     void Process_Button_clicked();
 };

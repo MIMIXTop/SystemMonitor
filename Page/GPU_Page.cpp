@@ -58,7 +58,6 @@ void GPU_Page::UpdateGPULoad() {
     static int count = 0;
 
     int load = GetLoadGpu();
-    //std::cout << load << std::endl;
 
     if(x.size() > 10) {
         x.remove(0);

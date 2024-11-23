@@ -25,9 +25,10 @@ public:
     ~Memory_Page() = default;
 
 private:
-    QCustomPlot* plot;
+    QCustomPlot* tempPlot;
     QVBoxLayout* layout;
     QTableWidget* table;
+
 private slots:
     void updateMemory();
 };

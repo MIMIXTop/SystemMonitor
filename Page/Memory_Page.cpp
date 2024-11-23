@@ -4,26 +4,29 @@
 
 #include "Memory_Page.hpp"
 
+#include <iostream>
+
 Memory_Page::Memory_Page(QWidget* parent)
-{
-    resize(700,600);
-    layout = new QVBoxLayout(this);
-    plot = new QCustomPlot();
-    layout->addWidget(plot);
+{  
+    layout = new QVBoxLayout();
+    tempPlot = new QCustomPlot();
 
-    plot->xAxis->setLabel("Load (%)");
+    tempPlot->yAxis->setLabel("Temp (^C)");
 
-    plot->addGraph();
-    plot->graph(0)->setPen(QPen(Qt::black));
+    tempPlot->addGraph();
+    tempPlot->graph(0)->setPen(QPen (Qt::blue));
 
-    plot->legend->setVisible(false);
+    tempPlot->legend->setVisible(false);
 
-    plot->xAxis->setRange(0,10);
-    plot->yAxis->setRange(0,100);
+    tempPlot->xAxis->setRange(0,10);
+    tempPlot->yAxis->setRange(0,100);
 
-    QTimer* timer = new QTimer(this);
+    QTimer *timer = new QTimer();
     connect(timer, &QTimer::timeout, this, &Memory_Page::updateMemory);
     timer->start(1000);
+
+    layout->addWidget(tempPlot);
+    setLayout(layout);
 }
 
 void Memory_Page::updateMemory() {
@@ -38,13 +41,14 @@ void Memory_Page::updateMemory() {
         x.remove(0);
         yMem.remove(0);
     }
+    double usage = memory[Memory::mUsed] / memory[Memory::mTotal] * 100;
+    yMem.append(usage);
 
-    yMem.append(memory[Memory::mUsed] / memory[Memory::mTotal] * 100);
-
-    double currentTime = startTime - count++;
+    double currentTime = startTime + count++;
     x.append(currentTime);
 
-    plot->xAxis->setRange(currentTime - 10, currentTime);
-    plot->graph(0)->setData(x,yMem);
-    plot->replot();
+    tempPlot->xAxis->setRange(currentTime - 10, currentTime);
+
+    tempPlot->graph(0)->setData(x,yMem);
+    tempPlot->replot();
 }

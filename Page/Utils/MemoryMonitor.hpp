@@ -15,7 +15,7 @@ enum Memory {
     mUsed
 };
 
-std::array<float,2> MemoryUsage();
+std::array<double,2> MemoryUsage();
 
 std::vector<long long> stringConvertToInt(std::vector<std::string> data);
 std::vector<std::string> readFile();

@@ -13,6 +13,8 @@
 #include <QTreeView>
 #include <QStandardItemModel>
 
+#include <cmath>
+
 #include "Utils/SystemMonitor.hpp"
 #include "Utils/Gpumonitor.hpp"
 
@@ -34,5 +36,6 @@ private:
     QStandardItem *PARENT_ITEM;
 };
 
+double roundToDecimalPlaces(double num,int decimal_palces);
 
 #endif //DRIVER_PAGE_HPP

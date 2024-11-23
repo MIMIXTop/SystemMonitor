@@ -33,7 +33,7 @@ std::vector<long long> stringConvertToInt(std::vector<std::string> data){
     return result;
 }
 
-std::array<float,2> MemoryUsage(){
+std::array<double,2> MemoryUsage(){
     std::vector data = stringConvertToInt(readFile());
 
     auto memTotal = data.at(0);
@@ -49,6 +49,6 @@ std::array<float,2> MemoryUsage(){
     auto memUsed = (memTotal - (memFree + buffer + cached));
     auto swapUsed = (swapTotal - swapFree);
 
-    return {static_cast<float>(memTotal / 1024.0 / 1024),static_cast<float>(memUsed / 1024.0 / 1024)};
+    return {static_cast<double>(memTotal / 1024.0 / 1024),static_cast<float>(memUsed / 1024.0 / 1024)};
 }
 

@@ -6,6 +6,11 @@
 
 #include "Utils/MemoryMonitor.hpp"
 
+double roundToDecimalPlaces(double num, int decimal_places){
+    double factor = std::pow(10, decimal_places);
+    return round(num * factor) / factor;
+}
+
 System_Page::System_Page(QWidget *parent) {
     auto drive = getDriverStats();
 
@@ -45,21 +50,21 @@ System_Page::System_Page(QWidget *parent) {
     SYSTEM->appendRow(new QStandardItem(printKernelVersion().data()));
     //CPU data
     CPU->appendRow(new QStandardItem(getCpuVender().data()));
-    CPU->appendRow(new QStandardItem(std::string("Количество ядер: " + std::to_string(getCores().physicalCors)).c_str()));
-    CPU->appendRow(new QStandardItem(std::string("Количество потоков: " + std::to_string(getCores().virtualCors)).c_str()));
+    CPU->appendRow(new QStandardItem(QString("Количество ядер: " + QString::number(getCores().physicalCors))));
+    CPU->appendRow(new QStandardItem(QString("Количество потоков: " + QString::number(getCores().virtualCors))));
     //RAM data
     auto mem = MemoryUsage();
-    RAM->appendRow(new QStandardItem(std::string("Общий объем: " + std::to_string(mem[Memory::mTotal]) + "Gb").c_str()));
+    RAM->appendRow(new QStandardItem(QString("Общий объем: " + QString::number(roundToDecimalPlaces(mem[Memory::mTotal], 2), 'f',2) + "Gb")));
     //DRIVER data
     auto driver = getDriverStats();
-    DRIVER->appendRow(new QStandardItem(std::string("Место под систему: " + std::to_string(driver[Driver::Total] / 1024 / 1024 / 1024) + "Gb").c_str()));
-    DRIVER->appendRow(new QStandardItem(std::string("Свободное место на дис: " + std::to_string(driver[Driver::Free] / 1024 / 1024 / 1024) + "Gb").c_str() ));
+    DRIVER->appendRow(new QStandardItem(QString("Место под систему: " + QString::number(roundToDecimalPlaces(driver[Driver::Total] / 1024 / 1024 / 1024, 2),'f',2) + "Gb")));
+    DRIVER->appendRow(new QStandardItem(QString("Свободное место на дис: " + QString::number(roundToDecimalPlaces(driver[Driver::Free] / 1024 / 1024 / 1024, 2),'f',2) + "Gb") ));
     //GPU data
     auto platform = GetPlatforms();
     for(int i = 0; i < platform.size(); i++) {
         GPU->appendRow(new QStandardItem(platform[i].name));
-        GPU->appendRow(new QStandardItem(std::string("Память: " + std::to_string(platform[i].memory / 1024.0 / 1024 / 1024) + "Mb").c_str()));
-        GPU->appendRow(new QStandardItem( std::string("Частота: " + std::to_string(platform[i].frequency) + "MHz").c_str() ));
+        GPU->appendRow(new QStandardItem(QString("Память: " + QString::number(platform[i].memory / 1024.0 / 1024 / 1024,'f',2) + "Gb")));
+        GPU->appendRow(new QStandardItem( QString("Частота: " + QString::number(platform[i].frequency) + "MHz") ));
     }
 
     System_Tree->setModel(model);
