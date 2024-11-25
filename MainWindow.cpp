@@ -3,21 +3,38 @@
 MainWindow::MainWindow(QWidget *parent): QWidget(parent) {
     mainLayout = new QHBoxLayout(this);
     buttonLayout = new QVBoxLayout();
+    stackLayout = new QVBoxLayout();
+    NamePage = new QLabel();
+
+    NamePage->setFixedHeight(30);
+
+    NamePage->setObjectName("NamePage");
+    buttonLayout->setObjectName("myLabel");
 
     this->resize(800, 600);
-    CPU_Button = new QPushButton("CPU_Button", this);
-    CPU_Button->setGeometry(QRect(5, 50, 95, 60));
-    Driver_Button = new QPushButton("Driver_Button", this);
-    Driver_Button->setGeometry(QRect(5, 100, 95, 60));
-    Memory_Button = new QPushButton("Memory_Button", this);
-    Memory_Button->setGeometry(QRect(5, 150, 95, 60));
-    Process_Button = new QPushButton("Process_Button", this);
-    Process_Button->setGeometry(QRect(5, 250, 95, 60));
+
+    CPU_Button = new QPushButton();
+    CPU_Button->setIcon(QIcon("../Image/IconButton/cpu_yellow.png"));
+    CPU_Button->setIconSize(QSize(75, 75));
+    CPU_Button->setCheckable(true);
+
+    Memory_Button = new QPushButton();
+    Memory_Button->setIcon(QIcon("../Image/IconButton/ram_yellow.png"));
+    Memory_Button->setIconSize(QSize(75, 75));
+
+    Process_Button = new QPushButton();
+    Process_Button->setIcon(QIcon("../Image/IconButton/process_yellow.png"));
+    Process_Button->setIconSize(QSize(75, 75));
+
+    Driver_Button = new QPushButton();
+    Driver_Button->setIcon(QIcon("../Image/IconButton/linux_logo_yellow.png"));
+    Driver_Button->setIconSize(QSize(75, 75));
 
     buttonLayout->addWidget(CPU_Button);
-    buttonLayout->addWidget(Driver_Button);
     buttonLayout->addWidget(Memory_Button);
     buttonLayout->addWidget(Process_Button);
+    buttonLayout->addWidget(Driver_Button);
+    buttonLayout->addStretch();
 
     mainLayout->addLayout(buttonLayout);
 
@@ -27,19 +44,25 @@ MainWindow::MainWindow(QWidget *parent): QWidget(parent) {
     connect(Process_Button, &QPushButton::clicked, this, &MainWindow::Process_Button_clicked);
 
     StackWidget = new QStackedWidget();
-    mainLayout->addWidget(StackWidget);
+    stackLayout->addWidget(NamePage);
+    stackLayout->addWidget(StackWidget);
+
+    mainLayout->addLayout(stackLayout);
 
     cpu = new CPU_Page();
+    cpu->setObjectName("CPU_Page");
     memory = new Memory_Page();
     driver = new System_Page();
     process = new Process_Page();
 
     StackWidget->addWidget(cpu);
-    StackWidget->addWidget(driver);
     StackWidget->addWidget(memory);
     StackWidget->addWidget(process);
+    StackWidget->addWidget(driver);
 
     StackWidget->setCurrentIndex(0);
+    NamePage->setText("Процессор");
+    NamePage->setAlignment(Qt::AlignHCenter);
     setLayout(mainLayout);
 }
 
@@ -74,16 +97,21 @@ void MainWindow::animateTransition(int fromIndex, int toIndex) {
 
 void MainWindow::CPU_Button_clicked() {
     animateTransition(StackWidget->currentIndex(), 0);
+    NamePage->setText("Процессор");
+
 }
 
 void MainWindow::Driver_Button_clicked() {
-    animateTransition(StackWidget->currentIndex(), 1);
+    animateTransition(StackWidget->currentIndex(), 3);
+    NamePage->setText("Система");
 }
 
 void MainWindow::Memory_Button_clicked() {
-    animateTransition(StackWidget->currentIndex(), 2);
+    animateTransition(StackWidget->currentIndex(), 1);
+    NamePage->setText("Оперативная память");
 }
 
 void MainWindow::Process_Button_clicked() {
-    animateTransition(StackWidget->currentIndex(), 3);
+    animateTransition(StackWidget->currentIndex(), 2);
+    NamePage->setText("Процессы");
 }

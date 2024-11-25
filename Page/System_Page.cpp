@@ -31,12 +31,13 @@ System_Page::System_Page(QWidget *parent) {
     if(logo_path != "") {
         pixmap_logo = QPixmap(logo_path);
     }else {
-        pixmap_logo = QPixmap("../Image/logo.png");
+        pixmap_logo = QPixmap("../Image/logo_test.png");
     }
 
     QLabel *label = new QLabel();
     label->setPixmap(pixmap_logo);
     label->setAlignment(Qt::AlignCenter);
+    label->setObjectName("SystemLogo");
     layout->addWidget(label);
 
     PARENT_ITEM->appendRow(SYSTEM);

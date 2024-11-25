@@ -20,4 +20,3 @@ double calculateCPUUsage(const CPUStats& prev, const CPUStats& curr);
 double getCpuTemperature();
 
 #endif //QT_TEST_CPUMONITOR_H
-/**/

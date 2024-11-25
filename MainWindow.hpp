@@ -6,6 +6,8 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QLabel>
+#include <QFile>
 #include <QPropertyAnimation>
 
 #include "Page/System_Page.hpp"
@@ -32,6 +34,7 @@ private:
     QHBoxLayout *mainLayout;
     QVBoxLayout *stackLayout;
     QVBoxLayout *buttonLayout;
+    QLabel *NamePage;
 
     void animateTransition(int fromIndex, int toIndex);
 
