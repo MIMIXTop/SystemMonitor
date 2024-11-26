@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     CPU_Button->setIconSize(QSize(75, 75));
     CPU_Button->setMinimumSize(75, 75);
     CPU_Button->setMaximumSize(95, 95);
+    CPU_Button->setStyleSheet("background-color: #3CB371;");
 
     Memory_Button = new QPushButton();
     Memory_Button->setIcon(QIcon("../Image/IconButton/ram_yellow.png"));
@@ -122,22 +123,34 @@ void MainWindow::animateTransition(int fromIndex, int toIndex) {
     animationGroup->start();
 }
 
+void MainWindow::settingButtons(QPushButton *clickedButton) {
+    for (QPushButton *button : findChildren<QPushButton *>()) {
+        button->setStyleSheet("");
+    }
+
+    clickedButton->setStyleSheet("background-color: #3CB371;");
+}
+
 void MainWindow::CPU_Button_clicked() {
     animateTransition(StackWidget->currentIndex(), 0);
     NamePage->setText("Процессор");
+    settingButtons(CPU_Button);
 }
 
 void MainWindow::Driver_Button_clicked() {
     animateTransition(StackWidget->currentIndex(), 3);
     NamePage->setText("Система");
+    settingButtons(Driver_Button);
 }
 
 void MainWindow::Memory_Button_clicked() {
     animateTransition(StackWidget->currentIndex(), 1);
     NamePage->setText("Оперативная память");
+    settingButtons(Memory_Button);
 }
 
 void MainWindow::Process_Button_clicked() {
     animateTransition(StackWidget->currentIndex(), 2);
     NamePage->setText("Процессы");
+    settingButtons(Process_Button);
 }

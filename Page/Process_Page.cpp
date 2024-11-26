@@ -6,6 +6,7 @@ Process_Page::Process_Page(QWidget *parent)
     : QWidget(parent), ascending(true), sortedColumn(0) {
 
     table = new QTableWidget(this);
+    table->setEditTriggers(QAbstractItemView::NoEditTriggers);
     table->setColumnWidth(4, 300); // Устанавливаем ширину для последнего столбца
     layout = new QVBoxLayout(this);
     timer = new QTimer(this);

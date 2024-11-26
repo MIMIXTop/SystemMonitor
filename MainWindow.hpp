@@ -42,6 +42,8 @@ private:
 
     void animateTransition(int fromIndex, int toIndex);
 
+    void settingButtons(QPushButton *clickedButton);
+
 public:
     explicit MainWindow(QWidget *parent = nullptr);
 

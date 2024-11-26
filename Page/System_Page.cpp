@@ -15,8 +15,11 @@ System_Page::System_Page(QWidget *parent) {
     auto drive = getDriverStats();
 
     layout = new QVBoxLayout();
+
     System_Tree = new QTreeView();
     System_Tree->setHeaderHidden(true);
+    System_Tree->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
     model = new QStandardItemModel();
     PARENT_ITEM = model->invisibleRootItem();
     CPU = new QStandardItem("Процессор");

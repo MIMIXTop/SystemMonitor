@@ -1,20 +1,48 @@
 /* Кнопки */
 QPushButton {
-    background-color: #0303cf; /* Синий фон */
-    color: white; /* Белый текст */
-    border: none; /* Без рамки */
-    padding: 10px; /* Отступы */
-    border-radius: 5px; /* Закругленные углы */
+    background-color: #0303cf;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
 }
 
-
 QPushButton:hover {
-    background-color: #005FA3; /* Темнее при наведении */
+    background-color: #3CB371; /* Темнее при наведении */
 }
 
 QWidget {
     background-color: #00994C;
     color: yellow;
+}
+QTableWidget {
+    background-color: #f0f0f0; /* Цвет фона */
+    border: 1px solid #a0a0a0; /* Граница таблицы */
+    font-size: 12pt; /* Размер шрифта */
+    color: black;
+}
+
+QTableWidget::item {
+    padding: 10px; /* Отступы для ячеек */
+    border: 1px solid #d0d0d0; /* Граница ячеек */
+}
+
+QTableWidget::item:selected {
+    background-color: #a0c4ff; /* Цвет фона для выбранных ячеек */
+    color: white; /* Цвет текста для выбранных ячеек */
+}
+
+QTreeView {
+    font-size: 15pt;
+    border: 0px solid;
+}
+
+QTreeView::item:selected {
+    background: green;
+}
+
+QTreeView::branch:selected {
+    background: green;
 }
 
 #SystemLogo {
@@ -25,6 +53,7 @@ QWidget {
     background-color: #FFD700;
     color: green;
     border-radius: 5;
+    font-size: 16;
 }
 
 #mainWindow {

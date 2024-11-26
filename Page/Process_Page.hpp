@@ -21,8 +21,8 @@ private:
     QTableWidget *table;
     QVBoxLayout *layout;
     QTimer *timer;
-    bool ascending = true;
-    int sortedColumn = 0;
+    bool ascending ;
+    int sortedColumn ;
 
 private slots:
     void update_processes();

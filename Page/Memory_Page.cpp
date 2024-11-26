@@ -11,8 +11,11 @@ Memory_Page::Memory_Page(QWidget* parent)
 
     mPlot->yAxis->setLabel("Load");
 
+    QPen pen(QColor(255,215,0));
+    pen.setWidth(2);
+
     mPlot->addGraph();
-    mPlot->graph(0)->setPen(QPen (Qt::blue));
+    mPlot->graph(0)->setPen(pen);
 
     mPlot->legend->setVisible(false);
 

@@ -31,9 +31,10 @@ CPU_Page::CPU_Page(QWidget* parent) {
     tempPlot = new QCustomPlot();
 
     tempPlot->yAxis->setLabel("Temp (^C)");
-
+    QPen pen(QColor(255,215,0));
+    pen.setWidth(2);
     tempPlot->addGraph();
-    tempPlot->graph(0)->setPen(PenColor.at(0));
+    tempPlot->graph(0)->setPen(pen);
 
     tempPlot->legend->setVisible(false);
 
