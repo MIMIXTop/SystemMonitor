@@ -1,35 +1,48 @@
 #include "MainWindow.hpp"
 
-MainWindow::MainWindow(QWidget *parent): QWidget(parent) {
+MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     mainLayout = new QHBoxLayout(this);
+    StackWidget = new QStackedWidget();
     buttonLayout = new QVBoxLayout();
-    stackLayout = new QVBoxLayout();
+    backgroundWidget = new QWidget();
+    stackLayout = new QVBoxLayout(backgroundWidget);
     NamePage = new QLabel();
 
-    NamePage->setFixedHeight(30);
+    backgroundWidget->setObjectName("BackGround");
+    setObjectName("mainWindow");
 
+    NamePage->setFixedHeight(30);
+    NamePage->setAlignment(Qt::AlignCenter);
     NamePage->setObjectName("NamePage");
-    buttonLayout->setObjectName("myLabel");
 
     this->resize(800, 600);
 
+    // Создание кнопок
     CPU_Button = new QPushButton();
     CPU_Button->setIcon(QIcon("../Image/IconButton/cpu_yellow.png"));
     CPU_Button->setIconSize(QSize(75, 75));
-    CPU_Button->setCheckable(true);
+    CPU_Button->setMinimumSize(75, 75);
+    CPU_Button->setMaximumSize(95, 95);
 
     Memory_Button = new QPushButton();
     Memory_Button->setIcon(QIcon("../Image/IconButton/ram_yellow.png"));
     Memory_Button->setIconSize(QSize(75, 75));
+    Memory_Button->setMinimumSize(75, 75);
+    Memory_Button->setMaximumSize(95, 95);
 
     Process_Button = new QPushButton();
     Process_Button->setIcon(QIcon("../Image/IconButton/process_yellow.png"));
     Process_Button->setIconSize(QSize(75, 75));
+    Process_Button->setMinimumSize(75, 75);
+    Process_Button->setMaximumSize(95, 95);
 
     Driver_Button = new QPushButton();
     Driver_Button->setIcon(QIcon("../Image/IconButton/linux_logo_yellow.png"));
     Driver_Button->setIconSize(QSize(75, 75));
+    Driver_Button->setMinimumSize(75, 75);
+    Driver_Button->setMaximumSize(95, 95);
 
+    // Добавление кнопок в layout
     buttonLayout->addWidget(CPU_Button);
     buttonLayout->addWidget(Memory_Button);
     buttonLayout->addWidget(Process_Button);
@@ -37,20 +50,21 @@ MainWindow::MainWindow(QWidget *parent): QWidget(parent) {
     buttonLayout->addStretch();
 
     mainLayout->addLayout(buttonLayout);
+    setLayout(mainLayout);
 
     connect(CPU_Button, &QPushButton::clicked, this, &MainWindow::CPU_Button_clicked);
     connect(Driver_Button, &QPushButton::clicked, this, &MainWindow::Driver_Button_clicked);
     connect(Memory_Button, &QPushButton::clicked, this, &MainWindow::Memory_Button_clicked);
     connect(Process_Button, &QPushButton::clicked, this, &MainWindow::Process_Button_clicked);
 
-    StackWidget = new QStackedWidget();
+    // Создание QStackedWidget и страниц
     stackLayout->addWidget(NamePage);
     stackLayout->addWidget(StackWidget);
+    StackWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    mainLayout->addLayout(stackLayout);
+    mainLayout->addWidget(backgroundWidget);
 
     cpu = new CPU_Page();
-    cpu->setObjectName("CPU_Page");
     memory = new Memory_Page();
     driver = new System_Page();
     process = new Process_Page();
@@ -62,13 +76,12 @@ MainWindow::MainWindow(QWidget *parent): QWidget(parent) {
 
     StackWidget->setCurrentIndex(0);
     NamePage->setText("Процессор");
-    NamePage->setAlignment(Qt::AlignHCenter);
-    setLayout(mainLayout);
 }
 
-
 void MainWindow::animateTransition(int fromIndex, int toIndex) {
-    if (fromIndex == toIndex) return;
+    if (fromIndex == toIndex || animationInProgress) return;
+
+    animationInProgress = true;
 
     QWidget *currentWidget = StackWidget->widget(fromIndex);
     QWidget *nextWidget = StackWidget->widget(toIndex);
@@ -76,29 +89,42 @@ void MainWindow::animateTransition(int fromIndex, int toIndex) {
     nextWidget->setGeometry(currentWidget->geometry());
     nextWidget->setVisible(true);
 
-    QPropertyAnimation *flipOutAnimation = new QPropertyAnimation(currentWidget,"geometry");
+    QPropertyAnimation *flipOutAnimation = new QPropertyAnimation(currentWidget, "geometry");
     flipOutAnimation->setDuration(500);
     flipOutAnimation->setStartValue(currentWidget->geometry());
-    flipOutAnimation->setEndValue(QRect(currentWidget->x() + currentWidget->width(), currentWidget->y(), currentWidget->width(), currentWidget->height()));
 
-    QPropertyAnimation *flipInAnimation = new QPropertyAnimation(nextWidget,"geometry");
+    if (fromIndex > toIndex) {
+        flipOutAnimation->setEndValue(QRect(currentWidget->x() + currentWidget->width(), currentWidget->y(), currentWidget->width(), currentWidget->height()));
+    } else {
+        flipOutAnimation->setEndValue(QRect(currentWidget->x() - currentWidget->width(), currentWidget->y(), currentWidget->width(), currentWidget->height()));
+    }
+
+    QPropertyAnimation *flipInAnimation = new QPropertyAnimation(nextWidget, "geometry");
     flipInAnimation->setDuration(500);
-    flipInAnimation->setStartValue(QRect(currentWidget->x() - currentWidget->width(), currentWidget->y(), currentWidget->width(), currentWidget->height()));
+
+    if (fromIndex > toIndex) {
+        flipInAnimation->setStartValue(QRect(currentWidget->x() - currentWidget->width(), currentWidget->y(), currentWidget->width(), currentWidget->height()));
+    } else {
+        flipInAnimation->setStartValue(QRect(currentWidget->x() + currentWidget->width(), currentWidget->y(), currentWidget->width(), currentWidget->height()));
+    }
     flipInAnimation->setEndValue(currentWidget->geometry());
 
-    connect(flipOutAnimation, &QPropertyAnimation::finished,[=]() {
+    QParallelAnimationGroup *animationGroup = new QParallelAnimationGroup(this);
+    animationGroup->addAnimation(flipOutAnimation);
+    animationGroup->addAnimation(flipInAnimation);
+
+    connect(animationGroup, &QParallelAnimationGroup::finished, [=]() {
         StackWidget->setCurrentIndex(toIndex);
         currentWidget->setVisible(false);
+        animationInProgress = false;
     });
 
-    flipOutAnimation->start();
-    flipInAnimation->start();
+    animationGroup->start();
 }
 
 void MainWindow::CPU_Button_clicked() {
     animateTransition(StackWidget->currentIndex(), 0);
     NamePage->setText("Процессор");
-
 }
 
 void MainWindow::Driver_Button_clicked() {

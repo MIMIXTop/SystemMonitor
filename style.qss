@@ -1,6 +1,6 @@
 /* Кнопки */
 QPushButton {
-    background-color: #0000CD; /* Синий фон */
+    background-color: #0303cf; /* Синий фон */
     color: white; /* Белый текст */
     border: none; /* Без рамки */
     padding: 10px; /* Отступы */
@@ -13,23 +13,26 @@ QPushButton:hover {
 }
 
 QWidget {
-    background-color: #191970;
+    background-color: #00994C;
     color: yellow;
 }
 
-QStackWidget {
-    background-color: white;
-    border-radius: 10px;
-}
-
 #SystemLogo {
-    background-color: white;
+    background-color: #00994C;
 }
 
 #NamePage {
-    background-color: #0000FF;
+    background-color: #FFD700;
+    color: green;
+    border-radius: 5;
 }
 
-#CPU_Page {
-    background-color: blue;
+#mainWindow {
+    background-color: green;
+    color: black;
+}
+
+#BackGround {
+    background-color: #00994C;
+    border-radius: 5;
 }

@@ -9,6 +9,7 @@
 #include <QLabel>
 #include <QFile>
 #include <QPropertyAnimation>
+#include <QParallelAnimationGroup>
 
 #include "Page/System_Page.hpp"
 #include "Page/Memory_Page.hpp"
@@ -35,6 +36,9 @@ private:
     QVBoxLayout *stackLayout;
     QVBoxLayout *buttonLayout;
     QLabel *NamePage;
+    QWidget *backgroundWidget;
+
+    bool animationInProgress = false;
 
     void animateTransition(int fromIndex, int toIndex);
 
