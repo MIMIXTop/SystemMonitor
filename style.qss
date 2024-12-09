@@ -28,7 +28,7 @@ QTableWidget::item {
 }
 
 QTableWidget::item:selected {
-    background-color: #a0c4ff; /* Цвет фона для выбранных ячеек */
+    background-color: #66CDAA; /* Цвет фона для выбранных ячеек */
     color: white; /* Цвет текста для выбранных ячеек */
 }
 
@@ -39,6 +39,7 @@ QTreeView {
 
 QTreeView::item:selected {
     background: green;
+    color:yellow;
 }
 
 QTreeView::branch:selected {
@@ -53,7 +54,7 @@ QTreeView::branch:selected {
     background-color: #FFD700;
     color: green;
     border-radius: 5;
-    font-size: 16;
+    font-size: 18;
 }
 
 #mainWindow {

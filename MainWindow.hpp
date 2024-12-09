@@ -40,7 +40,7 @@ private:
 
     bool animationInProgress = false;
 
-    void animateTransition(int fromIndex, int toIndex);
+    auto animateTransition(int fromIndex, int toIndex) -> void;
 
     void settingButtons(QPushButton *clickedButton);
 

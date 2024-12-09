@@ -42,8 +42,8 @@ double calculateCPUUsage(const CPUStats& prev, const CPUStats& curr) {
 double getCpuTemperature() {
     std::ifstream file("/sys/class/thermal/thermal_zone0/temp");
     if (!file) {
-        QMessageBox::information(nullptr,"Error","Ошибка открытия файла.");
-        return NULL;
+        //QMessageBox::information(nullptr,"Error","Ошибка открытия файла.");
+        throw std::runtime_error("Failed to open file");
     }
     float temperature;
     file >> temperature;

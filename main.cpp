@@ -14,6 +14,7 @@ int main(int argc, char* argv[])
         throw std::runtime_error("Style file could not be opened");
     }
     MainWindow w;
+    w.setWindowTitle("AIDA");
     w.show();
     return QApplication::exec();
 }

@@ -2,7 +2,6 @@
 // Created by mimixtop on 08.11.24.
 //
 
-
 #include "Gpumonitor.hpp"
 
 #include <iostream>
@@ -36,7 +35,7 @@ const std::vector<GPU> GetPlatforms() {
         err = clGetDeviceIDs(platformsArray[i], CL_DEVICE_TYPE_GPU, 0, nullptr, &deviceCount);
         if (err != CL_SUCCESS) {
             std::cerr << "Failed to get number of GPU devices. Error: " << err << std::endl;
-            continue; // Переходим к следующей платформе
+            continue;
         }
 
         // Если есть устройства, получаем информацию о них
@@ -71,29 +70,6 @@ const std::vector<GPU> GetPlatforms() {
         }
     }
 
-    // Освобождаем выделенную память
     delete[] platformsArray;
     return platforms;
 }
-
-const int GetLoadGpu() {
-    std::array<char,128> buffer{};
-    std::string load;
-
-    std::unique_ptr<FILE,decltype(&pclose)> pipe(popen("nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader", "r"), pclose);
-    if (!pipe) {
-        throw std::runtime_error("Failed to open pipe stream.");
-    }
-
-    while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
-        load.append(buffer.data());
-    }
-
-    std::regex regex(R"((\d+))");
-
-    std::smatch match;
-    std::regex_search(load, match, regex);
-
-    return std::stoi(match[1].str());
-}
-

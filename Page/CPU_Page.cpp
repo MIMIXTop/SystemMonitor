@@ -7,8 +7,10 @@ CPU_Page::CPU_Page(QWidget* parent) {
     setLayout(layout);
     // Создание графика загрузки по ядрам
     mPlot = new QCustomPlot();
+    mPlot->xAxis->setVisible(false);
+    mPlot->yAxis->setVisible(true);
 
-    mPlot->yAxis->setLabel("Load (%)");
+    mPlot->yAxis->setLabel("Загрузка (%)");
 
     for(int i = 0; i < corsCounter; i++) {
         mPlot->addGraph();
@@ -29,8 +31,10 @@ CPU_Page::CPU_Page(QWidget* parent) {
     //Создание графика температуры процессора
 
     tempPlot = new QCustomPlot();
+    tempPlot->xAxis->setVisible(false);
+    tempPlot->yAxis->setVisible(true);
 
-    tempPlot->yAxis->setLabel("Temp (^C)");
+    tempPlot->yAxis->setLabel("Температура(^C)");
     QPen pen(QColor(255,215,0));
     pen.setWidth(2);
     tempPlot->addGraph();

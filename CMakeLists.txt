@@ -43,8 +43,6 @@ set(PROJECT_SOURCES
         Page/System_Page.hpp
         Page/Utils/Gpumonitor.cpp
         Page/Utils/Gpumonitor.hpp
-        Page/GPU_Page.cpp
-        Page/GPU_Page.hpp
         Page/Utils/Processes.cpp
         Page/Utils/Processes.hpp
         Page/Process_Page.cpp

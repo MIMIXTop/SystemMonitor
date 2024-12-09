@@ -8,8 +8,10 @@ Memory_Page::Memory_Page(QWidget* parent)
 {  
     layout = new QVBoxLayout();
     mPlot = new QCustomPlot();
+    mPlot->xAxis->setVisible(false);
+    mPlot->yAxis->setVisible(true);
 
-    mPlot->yAxis->setLabel("Load");
+    mPlot->yAxis->setLabel("Используется(Гб)");
 
     QPen pen(QColor(255,215,0));
     pen.setWidth(2);

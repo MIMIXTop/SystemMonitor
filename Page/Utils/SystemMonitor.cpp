@@ -43,15 +43,14 @@ std::vector<unsigned long long> getDriverStats() {
 
     // Получаем информацию о файловой системе
     if (statvfs(path, &stat) != 0) {
-        // Ошибка при вызове statvfs
         QMessageBox::information(nullptr,"Error","Ошибка получения статистики файловой системы" );
         return {};
     }
 
     // Вычисляем размеры
-    unsigned long long total; // Общий размер
+    unsigned long long total;
     total = (stat.f_blocks * stat.f_frsize);
-    unsigned long long free = (stat.f_bfree * stat.f_frsize) ;   // Свободное место
+    unsigned long long free = (stat.f_bfree * stat.f_frsize) ;
     unsigned long long used = total - free;
 
     return {total,free,used};
@@ -102,5 +101,5 @@ QString findDistroLogo() {
         }
     }
 
-    return QString(); // Логотип не найден
+    return QString();
 }

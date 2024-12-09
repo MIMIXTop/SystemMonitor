@@ -19,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
 
     // Создание кнопок
     CPU_Button = new QPushButton();
-    CPU_Button->setIcon(QIcon("../Image/IconButton/cpu_yellow.png"));
+    CPU_Button->setIcon(QIcon("../Image/IconButton/NEW.png"));
     CPU_Button->setIconSize(QSize(75, 75));
     CPU_Button->setMinimumSize(75, 75);
     CPU_Button->setMaximumSize(95, 95);
@@ -32,13 +32,13 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     Memory_Button->setMaximumSize(95, 95);
 
     Process_Button = new QPushButton();
-    Process_Button->setIcon(QIcon("../Image/IconButton/process_yellow.png"));
+    Process_Button->setIcon(QIcon("../Image/IconButton/test_logo.png"));
     Process_Button->setIconSize(QSize(75, 75));
     Process_Button->setMinimumSize(75, 75);
     Process_Button->setMaximumSize(95, 95);
 
     Driver_Button = new QPushButton();
-    Driver_Button->setIcon(QIcon("../Image/IconButton/linux_logo_yellow.png"));
+    Driver_Button->setIcon(QIcon("../Image/IconButton/linux_logo_new.png"));
     Driver_Button->setIconSize(QSize(75, 75));
     Driver_Button->setMinimumSize(75, 75);
     Driver_Button->setMaximumSize(95, 95);
@@ -127,29 +127,32 @@ void MainWindow::settingButtons(QPushButton *clickedButton) {
     for (QPushButton *button : findChildren<QPushButton *>()) {
         button->setStyleSheet("");
     }
-
     clickedButton->setStyleSheet("background-color: #3CB371;");
 }
 
 void MainWindow::CPU_Button_clicked() {
+    if (animationInProgress) return;
     animateTransition(StackWidget->currentIndex(), 0);
     NamePage->setText("Процессор");
     settingButtons(CPU_Button);
 }
 
 void MainWindow::Driver_Button_clicked() {
+    if (animationInProgress) return;
     animateTransition(StackWidget->currentIndex(), 3);
     NamePage->setText("Система");
     settingButtons(Driver_Button);
 }
 
 void MainWindow::Memory_Button_clicked() {
+    if (animationInProgress) return;
     animateTransition(StackWidget->currentIndex(), 1);
     NamePage->setText("Оперативная память");
     settingButtons(Memory_Button);
 }
 
 void MainWindow::Process_Button_clicked() {
+    if (animationInProgress) return;
     animateTransition(StackWidget->currentIndex(), 2);
     NamePage->setText("Процессы");
     settingButtons(Process_Button);
